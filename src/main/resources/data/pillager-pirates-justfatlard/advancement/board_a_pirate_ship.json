@@ -1,0 +1,29 @@
+{
+  "parent": "minecraft:adventure/root",
+  "display": {
+    "icon": {
+      "id": "minecraft:crossbow"
+    },
+    "title": "Shiver Me Timbers",
+    "description": "Set foot on a pillager ship",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "aboard": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "#pillager-pirates-justfatlard:pirate_ship"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "structures": [
+    {
+      "structure": "pillager-pirates-justfatlard:sloop",
+      "weight": 4
+    },
+    {
+      "structure": "pillager-pirates-justfatlard:longship",
+      "weight": 3
+    },
+    {
+      "structure": "pillager-pirates-justfatlard:brigantine",
+      "weight": 3
+    },
+    {
+      "structure": "pillager-pirates-justfatlard:galleon",
+      "weight": 2
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 28,
+    "separation": 8,
+    "salt": 1739464012,
+    "exclusion_zone": {
+      "other_set": "minecraft:ocean_monuments",
+      "chunk_count": 4
+    }
+  }
+}

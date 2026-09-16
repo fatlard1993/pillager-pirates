@@ -1,0 +1,13 @@
+{
+  "type": "pillager-pirates-justfatlard:pirate_ship",
+  "ship": "galleon",
+  "biomes": "#pillager-pirates-justfatlard:has_structure/pirate_ship",
+  "spawn_overrides": {
+    "monster": {
+      "bounding_box": "piece",
+      "spawns": []
+    }
+  },
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}
