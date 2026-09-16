@@ -8,6 +8,12 @@ and yard arms, trapdoor hatches, a raised stern with a cabin in it, but these
 never sank. Their decks are manned, their holds are dry, and their chests are
 full of what the crew took from someone else.
 
+
+## Screenshots
+
+![A brigantine and a longship afloat: square rig, crow's nest, banners down the sides, crew on deck](brigantine.png)
+![The longship close to, oars out and its striped sail up, with the brigantine behind](fleet.png)
+
 ## The four ships
 
 | | Size | Rig | Aboard | Crew |

@@ -1,0 +1,18 @@
+{
+	"schemaVersion": 1,
+	"id": "pillager-pirates-gametest",
+	"version": "1.0.0",
+	"name": "Pillager Pirates game tests",
+	"description": "The pictures for the readme and the mod page.",
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"justfatlard.pillager_pirates.gametest.Showcase"
+		]
+	},
+	"depends": {
+		"pillager-pirates-justfatlard": "*",
+		"fabric-client-gametest-api-v1": "*"
+	}
+}
