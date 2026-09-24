@@ -4,7 +4,9 @@
   ],
   "versions": {
     "1.0.0": [
-      "Four crewed ships sail the open water: sloop, longship, brigantine and galleon, built the way the vanilla shipwrecks are, two woods and flared hulls and log masts, but these never sank.",
+      "Four crewed ships sail the open water: sloop, longship, brigantine and galleon.",
+      "Built the way the vanilla shipwrecks are, two woods and flared hulls and log masts.",
+      "These never sank.",
       "Each is drawn from its own seed, so no two are quite alike."
     ]
   }
