@@ -3,6 +3,9 @@
     "Pillagers have taken to the sea. Out on open water there are ships now: whole, afloat and crewed, with the plunder still in their chests."
   ],
   "versions": {
+    "1.0.1": [
+      "Release notes rewritten to read plainly; nothing in play changes."
+    ],
     "1.0.0": [
       "Four crewed ships sail the open water: sloop, longship, brigantine and galleon.",
       "Built the way the vanilla shipwrecks are, two woods and flared hulls and log masts.",
