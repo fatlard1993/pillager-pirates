@@ -3,6 +3,9 @@
     "Pillagers have taken to the sea. Out on open water there are ships now: whole, afloat and crewed, with the plunder still in their chests."
   ],
   "versions": {
+    "1.1.1": [
+      "The crew's vindicators dress too, as the bosun or the quartermaster, arms crossed or axe raised."
+    ],
     "1.1.0": [
       "With Pandorical on the server and your client, the crew dresses as pirates.",
       "The captain wears a tricorne, an eyepatch and a gold-trimmed coat.",

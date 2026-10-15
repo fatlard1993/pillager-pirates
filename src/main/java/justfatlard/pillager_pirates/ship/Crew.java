@@ -26,7 +26,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
  * sails and dropping into the sea.
  *
  * <p>Every illager hand also carries the {@link #TAG} entity tag, saved with it, so a crewman can be
- * told from any other pillager whenever it loads: that is how the crew gets its clothes back.
+ * told from any other illager whenever it loads: that is how the crew gets its clothes back.
  */
 public final class Crew {
 

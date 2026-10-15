@@ -64,17 +64,27 @@ land). The dev server in `run/` works with RCON for scripted checks.
 
 Every illager hand is given the `pillager-pirates-justfatlard.crew` entity tag
 when it is spawned, which is saved with it. With Pandorical loaded,
-`integration/PirateClothes` gives each tagged pillager an entity overlay every
-time it loads (Pandorical keeps overlays in memory only): the captain's sheet
-for the patrol leader, otherwise one of three deckhands' picked from the UUID.
-Crews spawned before the tag existed are recognised by `Crew.isCrew`, by
-standing persistent inside a ship's piece, and tagged then.
+`integration/PirateClothes` gives each tagged pillager and vindicator an entity
+overlay every time it loads (Pandorical keeps overlays in memory only): the
+captain's sheet for the patrol leader, otherwise one of three deckhands' picked
+from the UUID; a vindicator is the bosun or the quartermaster, the same way.
+Evokers are tagged too but left in their robes. Crews spawned before the tag
+existed are recognised by `Crew.isCrew`, by standing persistent inside a ship's
+piece, and tagged then.
 
-The four sheets in `assets/.../textures/entity/crew/` are drawn by
+The six sheets in `assets/.../textures/entity/crew/` are drawn by
 `generate_crew_textures.py`, pixel by pixel on the vanilla illager layout. It
 needs no Pillow and writes the same bytes every run. `--preview DIR` also writes
-each sheet over the vanilla pillager, as a front and back view and as the whole
-sheet, to look at.
+each sheet over the vanilla illager it is for, as a front and back view and as
+the whole sheet, to look at.
+
+A vindicator shows a different set of arm boxes depending on its pose: the
+crossed arms (upper arms at 44,22, the forearm bar at 40,38) while idle, the two
+separate arms (40,46) once it is after somebody. Its sheets paint both alike, so
+the clothes do not change when it raises its axe, and leave vanilla's hands
+showing in each. Its own coat sits on the jacket box over the body, so its
+shirts and waistcoats go on the jacket too: the body only shows at the neck.
+A pillager never crosses its arms, and its sheets leave those boxes empty.
 
 ```bash
 python3 generate_crew_textures.py --preview /tmp/crew

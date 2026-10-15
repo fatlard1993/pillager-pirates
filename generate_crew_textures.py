@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Generate the crew's pirate clothes: overlay sheets drawn over a pillager's own texture.
+"""Generate the crew's pirate clothes: overlay sheets drawn over an illager's own texture.
 
 Pandorical draws an overlay as a cutout layer on the entity's own model, so each sheet is laid out
-exactly like vanilla's pillager.png (64x64, the illager model) and every transparent pixel leaves
-the pillager showing through. Painted pixel by pixel onto that layout, the boxes as the illager
-model declares them (IllagerModel.createBodyLayer, 26.3):
+exactly like vanilla's pillager.png and vindicator.png (64x64, the illager model) and every
+transparent pixel leaves the illager showing through. Painted pixel by pixel onto that layout, the
+boxes as the illager model declares them (IllagerModel.createBodyLayer, 26.3):
 
     head      8x10x8 at 0,0     (the face is the front, rows 8-17, columns 8-15)
     body      8x12x6 at 16,20
@@ -13,18 +13,31 @@ model declares them (IllagerModel.createBodyLayer, 26.3):
     arms      4x12x4 at 40,46   (both arms, the left mirrored)
     legs      4x12x4 at 0,22
 
+and the crossed arms, the one part shown instead of the two arms whenever the arm pose is CROSSED,
+which on a vindicator is whenever it is not after somebody:
+
+    upper arms  4x8x4 at 44,22  (both, the left mirrored)
+    forearms    8x4x4 at 40,38  (one bar across the chest, the hands in its middle)
+
+A pillager never crosses its arms, so its sheets leave those alone. A vindicator's sheets paint both
+forms alike, so its clothes do not change when it raises its axe. A vindicator also wears its own
+coat on the jacket box, over the body (only the top 13 rows of it, open at the neck): whatever it
+wears instead goes on the jacket too, since the body underneath only shows at that neck.
+
 The hat box at 32,0 is hidden on every illager but the illusioner, so a hat cannot stand off the
 head here: the tricorne is painted onto the head itself, as the bandanas are.
 
-Four sheets: the captain in a tricorne and a gold-trimmed coat, and three deckhands. Vanilla's
-pillager is only read to render the previews; the sheets themselves are drawn from nothing.
+Six sheets: for the pillagers, the captain in a tricorne and a gold-trimmed coat and three
+deckhands; for the vindicators, the bosun and the quartermaster. Vanilla's textures are only read
+to render the previews; the sheets themselves are drawn from nothing.
 
 Pure stdlib (the PNG reader and writer come from generate_icon.py). Deterministic: re-running
 produces identical bytes.
 
 Usage: python3 generate_crew_textures.py [path/to/minecraft.jar] [--preview DIR]
-    --preview DIR   also write each sheet composited over the vanilla pillager, a front and back
-                    view and the whole UV sheet, scaled up, plus all of them side by side.
+    --preview DIR   also write each sheet composited over the vanilla illager it is for, a front
+                    and back view (a vindicator's with its arms crossed too) and the whole UV
+                    sheet, scaled up, plus all of them side by side.
 """
 
 import os
@@ -50,6 +63,12 @@ WHITE = (234, 230, 218, 255)
 NAVY, NAVY_DARK = (32, 44, 92, 255), (20, 28, 62, 255)
 BLUE, BLUE_DARK = (44, 84, 156, 255), (28, 54, 108, 255)
 LEATHER, LEATHER_DARK = (104, 66, 36, 255), (70, 44, 24, 255)
+SKIN, SKIN_SHADE = (142, 147, 147, 255), (126, 131, 131, 255)  # vanilla's illager grey
+HAND = (149, 155, 155, 255)
+INK = (40, 62, 112, 255)
+SEA, SEA_DARK = (40, 128, 112, 255), (24, 84, 74, 255)
+GREEN, GREEN_DARK = (52, 112, 58, 255), (32, 74, 38, 255)
+LINEN, LINEN_DARK = (226, 222, 208, 255), (186, 180, 164, 255)
 
 
 class Box:
@@ -79,6 +98,8 @@ BODY = Box(16, 20, 8, 12, 6)
 JACKET = Box(0, 38, 8, 20, 6)
 ARM = Box(40, 46, 4, 12, 4)
 LEG = Box(0, 22, 4, 12, 4)
+UPPER_ARM = Box(44, 22, 4, 8, 4)
+FOREARMS = Box(40, 38, 8, 4, 4)
 
 
 def blank():
@@ -289,12 +310,200 @@ def deckhand_sash():
     return sheet
 
 
+# The vindicators. Its coat is on the jacket box, rows 44-56; the front face is columns 6-13.
+
+def sleeves(sheet, cloth, cuff, shade=None):
+    """Both arm forms dressed alike: the separate arms (a sleeve to the wrist, the cuff on the last
+    rows above the hand) and the crossed arms (the upper arms whole, and the bar of forearms everywhere
+    but the hands). Vanilla's hands are the bar's middle five columns - one further left on the back -
+    and the separate arm's last rows, with a few of row 59; those are left showing.
+    shade, if given, darkens the back of each arm."""
+    shade = shade or cloth
+    # Separate arms: right 40-43, front 44-47, left 48-51, back 52-55; rows 50-61.
+    for row in range(8):
+        band(sheet, ARM, row, cloth)
+    rect(sheet, 52, 50, 55, 57, shade)
+    band(sheet, ARM, 8, cuff)
+    for px in range(40, 56):
+        if px - 40 not in (1, 2, 9, 10):
+            put(sheet, px, 59, cuff)
+    put(sheet, 45, 60, HAND)  # vanilla's dark sleeve end notches into the front of the hand
+    put(sheet, 46, 60, HAND)
+    face(sheet, ARM.top(), cloth)
+    # Crossed: the upper arms, shoulder to elbow and both ends.
+    for row in range(8):
+        band(sheet, UPPER_ARM, row, cloth)
+    rect(sheet, 56, 26, 59, 33, shade)
+    face(sheet, UPPER_ARM.top(), cloth)
+    x, y, w, h = UPPER_ARM.top()
+    rect(sheet, x + w, y, x + 2 * w - 1, y + h - 1, cloth)  # the elbows
+    # The forearms: both ends, and round the hands.
+    rect(sheet, 40, 42, 43, 45, cloth)
+    rect(sheet, 52, 42, 55, 45, cloth)
+    for fx, fy in ((44, 42), (44, 38), (52, 38)):  # front, top, bottom: hands in columns 2-6
+        rect(sheet, fx, fy, fx, fy + 3, cloth)
+        rect(sheet, fx + 1, fy, fx + 1, fy + 3, cuff)
+        rect(sheet, fx + 7, fy, fx + 7, fy + 3, cuff)
+    rect(sheet, 56, 42, 56, 45, cuff)  # back: hands in columns 1-5
+    rect(sheet, 62, 42, 62, 45, cuff)
+    rect(sheet, 63, 42, 63, 45, shade)
+
+
+def anchor(sheet, x, y):
+    """A tattooed anchor, three wide and five tall, its top-left corner at x, y."""
+    for dx, dy in ((1, 0), (0, 1), (1, 1), (2, 1), (1, 2), (0, 3), (2, 3), (1, 4)):
+        put(sheet, x + dx, y + dy, INK)
+
+
+def tails(sheet, cloth, dark):
+    """A headscarf knotted at the back of the head, its two ends hanging long behind."""
+    for px, py in ((27, 11), (28, 11), (27, 12), (28, 12), (27, 13), (28, 13), (27, 14),
+                   (28, 15), (27, 16)):
+        put(sheet, px, py, cloth)
+    for px, py in ((28, 12), (28, 14), (27, 15), (28, 16), (27, 17)):
+        put(sheet, px, py, dark)
+
+
+def bosun_scarf(sheet):
+    """Sea green, plain, pulled down to the brows, knotted at the back with long tails."""
+    face(sheet, HEAD.top(), SEA)
+    band(sheet, HEAD, 0, SEA, rows=3)
+    band(sheet, HEAD, 3, SEA_DARK)
+    x, y, w, h = HEAD.top()
+    for j in range(0, h, 3):
+        put(sheet, x + 1 + j % 5, y + j, SEA_DARK)
+    tails(sheet, SEA, SEA_DARK)
+
+
+def breton(sheet):
+    """A sleeveless shirt in navy and white hoops, over the coat on the jacket box, open at the neck,
+    with a broad belt and a gold buckle at the hem."""
+    face(sheet, JACKET.top(), WHITE)
+    for row in range(11):
+        band(sheet, JACKET, row, WHITE if row % 2 == 0 else NAVY)
+    x, y, _, _ = JACKET.front()
+    put(sheet, x + 3, y, CLEAR)  # the neck, where vanilla's coat is open too
+    put(sheet, x + 4, y, CLEAR)
+    band(sheet, JACKET, 11, LEATHER, rows=2)
+    band(sheet, JACKET, 12, LEATHER_DARK)
+    rect(sheet, x + 3, y + 11, x + 4, y + 12, GOLD)
+    put(sheet, x + 3, y + 12, GOLD_DARK)
+
+
+def whistle(sheet):
+    """A bosun's call on a gold chain round the neck, the whistle on the chest."""
+    x, y, _, _ = JACKET.front()
+    for dx, dy in ((2, 0), (3, 1), (5, 0), (4, 1), (3, 2), (4, 2)):
+        put(sheet, x + dx, y + dy, GOLD)
+    put(sheet, x + 5, y + 2, GOLD_DARK)
+    put(sheet, x + 3, y + 3, GOLD_DARK)
+
+
+def tattoos(sheet):
+    """An anchor on the outside of each upper arm, crossed or not: the outside is the box's right
+    face, which the mirrored left arm turns outward as well."""
+    anchor(sheet, 40, 51)   # separate arm, right face 40-43
+    anchor(sheet, 44, 27)   # crossed upper arm, right face 44-47
+
+
+def quartermaster_scarf(sheet):
+    """Black, banded gold, knotted over the left ear, where the deckhands' knot over the right."""
+    face(sheet, HEAD.top(), FELT)
+    band(sheet, HEAD, 0, FELT, rows=3)
+    band(sheet, HEAD, 1, FELT_LIGHT)
+    band(sheet, HEAD, 3, GOLD)
+    x, y, w, h = HEAD.top()
+    for j in range(1, h, 3):
+        for i in range(w):
+            put(sheet, x + i, y + j, FELT_LIGHT)
+    # The left side runs 16-23 with its front edge at 16: the knot sits behind the ear.
+    for px, py in ((20, 12), (21, 12), (20, 13), (21, 13), (21, 14), (21, 15), (20, 16)):
+        put(sheet, px, py, FELT)
+    put(sheet, 21, 13, FELT_LIGHT)
+    put(sheet, 20, 16, GOLD)
+
+
+def waistcoat(sheet):
+    """A leather waistcoat over a linen shirt, buttoned gold below an open neck, laced up the back;
+    a green sash wound over it and knotted at the right hip."""
+    face(sheet, JACKET.top(), LEATHER)
+    for row in range(13):
+        band(sheet, JACKET, row, LEATHER)
+    band(sheet, JACKET, 12, LEATHER_DARK)
+    x, y, _, _ = JACKET.front()
+    # The shirt, open at the neck and showing down to the sash.
+    rect(sheet, x + 2, y, x + 5, y + 2, LINEN)
+    rect(sheet, x + 3, y + 3, x + 4, y + 8, LINEN)
+    put(sheet, x + 3, y, CLEAR)
+    put(sheet, x + 4, y, CLEAR)
+    for row in range(3, 9):
+        put(sheet, x + 2, y + row, LEATHER_DARK)
+        put(sheet, x + 5, y + row, LEATHER_DARK)
+    for row in (4, 6, 8):
+        put(sheet, x + 2, y + row, GOLD)
+    bx, by, _, _ = JACKET.back()
+    for row in range(1, 9):
+        put(sheet, bx + 3 + row % 2, by + row, LEATHER_DARK)
+    # The sash, and its knot hanging at the right hip: the front face's first columns.
+    band(sheet, JACKET, 9, GREEN)
+    band(sheet, JACKET, 10, GREEN_DARK)
+    band(sheet, JACKET, 11, GREEN)
+    rect(sheet, x, y + 12, x + 1, y + 15, GREEN)
+    for row in range(12, 16):
+        put(sheet, x, y + row, GREEN_DARK)
+    put(sheet, x + 1, y + 15, GREEN_DARK)
+
+
+def baldric(sheet):
+    """A black strap from the left shoulder across to the right hip, the other way to the deckhands'
+    bandolier, with a gold buckle on the chest; up the back from the left hip to the right shoulder."""
+    x, y, _, _ = JACKET.front()
+    bx, by, _, _ = JACKET.back()
+    for i in range(8):
+        put(sheet, x + 7 - i, y + i, STRAP)
+        put(sheet, bx + i, by + 7 - i, STRAP)
+    put(sheet, x + 4, y + 3, GOLD)
+    put(sheet, x + 5, y + 2, GOLD)
+
+
+def earrings(sheet):
+    """Gold hoops in both ears."""
+    earring(sheet)
+    put(sheet, 19, 15, GOLD)
+    put(sheet, 19, 16, GOLD_DARK)
+
+
+def bosun():
+    sheet = blank()
+    bosun_scarf(sheet)
+    breton(sheet)
+    whistle(sheet)
+    sleeves(sheet, SKIN, LEATHER_DARK, SKIN_SHADE)
+    tattoos(sheet)
+    return sheet
+
+
+def quartermaster():
+    sheet = blank()
+    quartermaster_scarf(sheet)
+    earrings(sheet)
+    waistcoat(sheet)
+    baldric(sheet)
+    sleeves(sheet, LINEN, LINEN_DARK)
+    return sheet
+
+
 VARIANTS = {
     "captain": captain,
     "deckhand_stripes": deckhand_stripes,
     "deckhand_patch": deckhand_patch,
     "deckhand_sash": deckhand_sash,
+    "bosun": bosun,
+    "quartermaster": quartermaster,
 }
+
+# Which vanilla illager each sheet is drawn over: only for the previews.
+VINDICATORS = ("bosun", "quartermaster")
 
 
 # Previews: never shipped, only for looking at.
@@ -308,9 +517,11 @@ def mirror(pixels):
     return [list(reversed(row)) for row in pixels]
 
 
-def doll(sheet, side):
+def doll(sheet, side, crossed=False):
     """A flat paper doll of one side, assembled from the faces: arms, body, legs, the jacket over
-    them and the head on top. From the back, the entity's right is on the viewer's right."""
+    them and the head on top. From the back, the entity's right is on the viewer's right. Crossed,
+    the upper arms hang at the sides and the forearms lie across the chest, roughly where the
+    model tilts them up to."""
     pick = (lambda b: b.front()) if side == "front" else (lambda b: b.back())
     out = [[CLEAR] * 16 for _ in range(34)]
 
@@ -323,8 +534,14 @@ def doll(sheet, side):
     stamp(out, part(LEG, True), 8 if side == "front" else 4, 22)
     stamp(out, part(BODY), 4, 10)
     stamp(out, part(JACKET), 4, 10)
-    stamp(out, part(ARM), right_x, 10)
-    stamp(out, part(ARM, True), left_x, 10)
+    if crossed:
+        stamp(out, part(UPPER_ARM), right_x, 11)
+        stamp(out, part(UPPER_ARM, True), left_x, 11)
+        if side == "front":
+            stamp(out, part(FOREARMS), 4, 15)
+    else:
+        stamp(out, part(ARM), right_x, 10)
+        stamp(out, part(ARM, True), left_x, 10)
     stamp(out, part(HEAD), 4, 0)
     return out
 
@@ -333,12 +550,15 @@ def backdrop(pixels, colour=(64, 96, 128, 255)):
     return [[px if px[3] else colour for px in row] for row in pixels]
 
 
-def preview(name, sheet, base):
+def preview(name, sheet, base, crossed=False):
+    """Front and back; a vindicator's again with its arms crossed, front and back."""
     dressed = composite(base, sheet)
-    front, back = doll(dressed, "front"), doll(dressed, "back")
-    pair = [[CLEAR] * 36 for _ in range(34)]
-    stamp(pair, front, 0, 0)
-    stamp(pair, back, 20, 0)
+    views = [doll(dressed, "front"), doll(dressed, "back")]
+    if crossed:
+        views += [doll(dressed, "front", True), doll(dressed, "back", True)]
+    pair = [[CLEAR] * (20 * len(views) - 4) for _ in range(34)]
+    for i, view in enumerate(views):
+        stamp(pair, view, 20 * i, 0)
     write_png(os.path.join(PREVIEW, name + "_front_back.png"), scale(backdrop(pair), 12))
     write_png(os.path.join(PREVIEW, name + "_sheet.png"), scale(backdrop(dressed), 8))
     return pair
@@ -349,13 +569,23 @@ def main():
     for name, sheet in sheets.items():
         write_png(os.path.join(OUT, name + ".png"), sheet)
     if PREVIEW:
-        base = vanilla("entity/illager/pillager.png")
-        pairs = [preview("vanilla", blank(), base)]
-        pairs += [preview(name, sheet, base) for name, sheet in sheets.items()]
-        row = [[CLEAR] * (40 * len(pairs)) for _ in range(34)]
-        for i, pair in enumerate(pairs):
-            stamp(row, pair, 40 * i + 2, 0)
-        write_png(os.path.join(PREVIEW, "all_crew.png"), scale(backdrop(row), 8))
+        pillager = vanilla("entity/illager/pillager.png")
+        vindicator = vanilla("entity/illager/vindicator.png")
+        lineup("all_crew.png", [preview("vanilla", blank(), pillager)]
+               + [preview(name, sheet, pillager) for name, sheet in sheets.items() if name not in VINDICATORS])
+        lineup("all_vindicators.png", [preview("vanilla_vindicator", blank(), vindicator, True)]
+               + [preview(name, sheet, vindicator, True) for name, sheet in sheets.items() if name in VINDICATORS])
+
+
+def lineup(name, pairs):
+    """The previews side by side, one after another."""
+    widths = [len(pair[0]) + 4 for pair in pairs]
+    row = [[CLEAR] * sum(widths) for _ in range(34)]
+    left = 0
+    for pair, width in zip(pairs, widths):
+        stamp(row, pair, left + 2, 0)
+        left += width
+    write_png(os.path.join(PREVIEW, name), scale(backdrop(row), 8))
 
 
 if __name__ == "__main__":

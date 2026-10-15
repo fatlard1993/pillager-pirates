@@ -65,9 +65,9 @@ No more come aboard afterwards. A cleared ship stays cleared, and nothing else s
 
 ## What they wear
 
-With [Pandorical](https://github.com/fatlard1993/pandorical) on the server and on your client, the crew dresses for the sea. The captain wears a black tricorne edged in gold, an eyepatch and a navy frock coat with gold buttons, cuffs and epaulettes. The deckhands go in spotted bandanas or a banded headscarf, hooped red and white shirts, eyepatches, gold earrings, and a red sash with a bandolier over it. Each one always wears the same outfit.
+With [Pandorical](https://github.com/fatlard1993/pandorical) on the server and on your client, the crew dresses for the sea. The captain wears a black tricorne edged in gold, an eyepatch and a navy frock coat with gold buttons, cuffs and epaulettes. The deckhands go in spotted bandanas or a banded headscarf, hooped red and white shirts, eyepatches, gold earrings, and a red sash with a bandolier over it. The vindicators dress as the bosun, in a sea-green headscarf, a sleeveless navy and white striped shirt, leather wristbands and a whistle on a gold chain, with an anchor tattooed on each arm; or as the quartermaster, in a black headscarf banded with gold, gold earrings, a leather waistcoat over a linen shirt, a green sash and a strap across the chest. Their clothes look the same whether their arms are crossed or their axe is raised. Each one always wears the same outfit. The evokers keep their robes.
 
-The clothes are drawn over the pillager's own texture, so underneath they are still vanilla pillagers and nothing about how they fight changes. Without Pandorical, on either side, they are plain pillagers. The captain's ominous banner still sits on top of the tricorne.
+The clothes are drawn over the illagers' own textures, so underneath they are still vanilla pillagers and vindicators, and nothing about how they fight changes. Without Pandorical, on either side, they are plain illagers. The captain's ominous banner still sits on top of the tricorne.
 
 ## What they are carrying
 
@@ -93,7 +93,7 @@ Everything about where ships go and what is on them is datapack data under `data
 
 ## Installing
 
-Server-side. The ships are built entirely from vanilla blocks and mobs, so players connect with an unmodified client and see everything. Pandorical is optional: with it on the server and on a player's client, that player sees the crew in pirate clothes; everyone else sees plain pillagers. Singleplayer works too. It targets the Minecraft, Fabric Loader and Fabric API versions declared in this mod's `gradle.properties`.
+Server-side. The ships are built entirely from vanilla blocks and mobs, so players connect with an unmodified client and see everything. Pandorical is optional: with it on the server and on a player's client, that player sees the crew in pirate clothes; everyone else sees plain illagers. Singleplayer works too. It targets the Minecraft, Fabric Loader and Fabric API versions declared in this mod's `gradle.properties`.
 
 ## License
 
