@@ -15,6 +15,12 @@ for the jar named by the `mod_version` in big-boats' own `gradle.properties`, so
 build big-boats first. The tests read its capacity table too. It is never bundled; at runtime the helm is only placed when
 big-boats is installed.
 
+The crew's pirate clothes compile against `../pandorical/build/libs/`, the same
+way, by the `mod_version` in Pandorical's `gradle.properties`, so build
+Pandorical first too. It is never bundled and only a suggestion in
+`fabric.mod.json`: `integration/PirateClothes` is the only class that names a
+Pandorical type, and it is only reached when Pandorical is loaded.
+
 ## Tests
 
 ```bash
@@ -53,3 +59,23 @@ things a player taking a ship depends on:
 `/place structure pillager-pirates-justfatlard:<ship> <x> <y> <z>` over deep
 ocean places one on demand (it runs the same water check, so it refuses over
 land). The dev server in `run/` works with RCON for scripted checks.
+
+## The crew's clothes
+
+Every illager hand is given the `pillager-pirates-justfatlard.crew` entity tag
+when it is spawned, which is saved with it. With Pandorical loaded,
+`integration/PirateClothes` gives each tagged pillager an entity overlay every
+time it loads (Pandorical keeps overlays in memory only): the captain's sheet
+for the patrol leader, otherwise one of three deckhands' picked from the UUID.
+Crews spawned before the tag existed are recognised by `Crew.isCrew`, by
+standing persistent inside a ship's piece, and tagged then.
+
+The four sheets in `assets/.../textures/entity/crew/` are drawn by
+`generate_crew_textures.py`, pixel by pixel on the vanilla illager layout. It
+needs no Pillow and writes the same bytes every run. `--preview DIR` also writes
+each sheet over the vanilla pillager, as a front and back view and as the whole
+sheet, to look at.
+
+```bash
+python3 generate_crew_textures.py --preview /tmp/crew
+```

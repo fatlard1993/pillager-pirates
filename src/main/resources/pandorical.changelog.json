@@ -3,6 +3,13 @@
     "Pillagers have taken to the sea. Out on open water there are ships now: whole, afloat and crewed, with the plunder still in their chests."
   ],
   "versions": {
+    "1.1.0": [
+      "With Pandorical on the server and your client, the crew dresses as pirates.",
+      "The captain wears a tricorne, an eyepatch and a gold-trimmed coat.",
+      "Deckhands wear bandanas, striped shirts, eyepatches, earrings and sashes.",
+      "Without Pandorical they are plain pillagers, as before.",
+      "A mod menu icon of a pillager in a tricorne and eyepatch."
+    ],
     "1.0.1": [
       "Release notes rewritten to read plainly; nothing in play changes."
     ],

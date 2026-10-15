@@ -35,6 +35,25 @@ dependencies {
 		}
 	}
 
+	// Optional: Pandorical, for the crew's pirate clothes. Compile-only and never bundled, and only
+	// reached behind an isModLoaded check, so the mod still runs without it and vanilla clients
+	// still see plain pillagers. Resolved by the version it declares, for the same reason as above.
+	def pandoricalProperties = file("../pandorical/gradle.properties")
+	def pandoricalJar = null
+	if (pandoricalProperties.exists()) {
+		def pandoricalVersion = new Properties().with {
+			pandoricalProperties.withInputStream { load(it) }
+			getProperty("mod_version")?.trim()
+		}
+		pandoricalJar = file("../pandorical/build/libs/pandorical-${pandoricalVersion}.jar")
+	}
+	if (pandoricalJar == null || !pandoricalJar.exists()) {
+		// Said plainly: integration/PirateClothes imports it outright, so a missing jar otherwise
+		// surfaces as "package justfatlard.pandorical.api does not exist".
+		throw new GradleException("pillager-pirates compiles against pandorical. Build pandorical first.")
+	}
+	compileOnly files(pandoricalJar)
+
 	testImplementation "org.junit.jupiter:junit-jupiter:5.12.2"
 	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
