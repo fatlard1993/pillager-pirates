@@ -1,0 +1,8 @@
+{
+  "dimension": "pvp-dimensions-justfatlard:overworld",
+  "chunks": 4,
+  "biome": "minecraft:warm_ocean",
+  "surface_y": 50,
+  "highest_y": 63,
+  "wall_top": 319
+}

@@ -1,0 +1,37 @@
+{
+  "demo": {
+    "name": "Pillager Pirates",
+    "icon": "minecraft:crossbow",
+    "about": [
+      "Pillagers have taken to the sea: whole ships afloat on open water, crewed, armed and carrying their plunder.",
+      "Row out to the brigantine at anchor, board her and fight the crew for what is in the hold."
+    ]
+  },
+  "pvp_preset": 1,
+  "needs": ["pillager-pirates-justfatlard"],
+  "preset": {
+    "name": "Pillager Pirates",
+    "icon": "minecraft:crossbow",
+    "pvp": false,
+    "game_mode": "survival",
+    "source": "saved",
+    "saved": "pirates-demo",
+    "entry_kit": [
+      {"slot": 0, "item": {"id": "minecraft:iron_sword", "count": 1}},
+      {"slot": 1, "item": {"id": "minecraft:bow", "count": 1}},
+      {"slot": 2, "item": {"id": "minecraft:oak_boat", "count": 1}},
+      {"slot": 3, "item": {"id": "minecraft:cooked_beef", "count": 8}},
+      {"slot": 9, "item": {"id": "minecraft:arrow", "count": 32}},
+      {"slot": 40, "item": {"id": "minecraft:shield", "count": 1}},
+      {"slot": 36, "item": {"id": "minecraft:iron_boots", "count": 1}},
+      {"slot": 37, "item": {"id": "minecraft:iron_leggings", "count": 1}},
+      {"slot": 38, "item": {"id": "minecraft:iron_chestplate", "count": 1}},
+      {"slot": 39, "item": {"id": "minecraft:iron_helmet", "count": 1}}
+    ],
+    "respawn_kit": "entry",
+    "goal": "time",
+    "mobs": "off",
+    "life": 15,
+    "weather": "clear"
+  }
+}
