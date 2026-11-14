@@ -3,6 +3,9 @@
     "Pillagers have taken to the sea. Out on open water there are ships now: whole, afloat and crewed, with the plunder still in their chests."
   ],
   "versions": {
+    "1.1.5": [
+      "A demo to play in PvP Dimensions' onboarding, on ground with the structure already standing."
+    ],
     "1.1.4": [
       "Drop changelog notes for changes nothing in the game shows."
     ],
